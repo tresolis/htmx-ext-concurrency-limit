@@ -1,9 +1,13 @@
 # Publishes htmx-ext-concurrency-limit to npm with provenance when a release
 # is published.
 #
-# Auth: Trusted Publishing (OIDC, no secret). Registered on npmjs.com →
-#   package Settings → Trusted Publishers (this repo + this workflow).
-#   id-token: write below grants the OIDC token; provenance is automatic.
+# Auth: granular npm automation token in the NPM_TOKEN repo secret
+#   (Settings → Secrets and variables → Actions). Required for the first
+#   publish, which creates the package — Trusted Publishing can't authorize
+#   a package that doesn't exist yet.
+#   Once published, you may register a Trusted Publisher on npmjs.com
+#   (package Settings → Trusted Publishers: this repo + this workflow) and
+#   drop NPM_TOKEN; id-token: write below already grants the OIDC token.
 #
 # Release flow:
 #   1. bump "version" in package.json + update CHANGELOG.md, commit, push
@@ -59,3 +63,5 @@ jobs:
 
       - name: Publish to npm
         run: pnpm publish --access public --provenance --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
