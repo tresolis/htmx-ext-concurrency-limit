@@ -1,0 +1,61 @@
+# Publishes htmx-ext-concurrency-limit to npm with provenance when a release
+# is published.
+#
+# Auth: Trusted Publishing (OIDC, no secret). Registered on npmjs.com →
+#   package Settings → Trusted Publishers (this repo + this workflow).
+#   id-token: write below grants the OIDC token; provenance is automatic.
+#
+# Release flow:
+#   1. bump "version" in package.json + update CHANGELOG.md, commit, push
+#   2. GitHub → Releases → Draft a new release, create tag v0.1.0, publish
+#      → this workflow fires and publishes to npm
+
+name: Release
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # required for provenance / trusted publishing
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Verify version matches release tag
+        if: github.event_name == 'release'
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          pkg="$(node -p "require('./package.json').version")"
+          tag="${TAG#v}"
+          if [ "$pkg" != "$tag" ]; then
+            echo "::error::package.json version ($pkg) != release tag ($tag). Bump package.json before releasing."
+            exit 1
+          fi
+          echo "✅ version $pkg matches tag $TAG"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Publish to npm
+        run: pnpm publish --access public --provenance --no-git-checks
