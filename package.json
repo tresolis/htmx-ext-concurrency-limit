@@ -11,7 +11,9 @@
   },
   "files": [
     "src",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "scripts": {
     "test": "node --test"
@@ -24,6 +26,19 @@
     "queue"
   ],
   "license": "MIT",
+  "author": "Loeiz Tanguy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tresolis/htmx-ext-concurrency-limit.git"
+  },
+  "homepage": "https://github.com/tresolis/htmx-ext-concurrency-limit#readme",
+  "bugs": "https://github.com/tresolis/htmx-ext-concurrency-limit/issues",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "provenance": true
+  },
   "peerDependencies": {
     "htmx.org": "^2.0.10"
   }
