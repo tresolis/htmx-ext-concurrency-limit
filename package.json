@@ -1,0 +1,30 @@
+{
+  "name": "htmx-ext-concurrency-limit",
+  "version": "0.1.0",
+  "description": "htmx extension that caps simultaneous in-flight requests per page and queues the rest (FIFO).",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./limiter": "./src/limiter.js"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "htmx",
+    "htmx-extension",
+    "concurrency",
+    "rate-limit",
+    "queue"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "htmx.org": "^2.0.10"
+  }
+}
